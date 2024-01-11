@@ -1,6 +1,5 @@
-//define what the frontend will have access
-
 import { Field, ObjectType } from "type-graphql";
+import { Customer } from "./customer-model";
 
 @ObjectType()
 export class Appointment {
@@ -9,4 +8,5 @@ export class Appointment {
 
   @Field()
   endsAt: Date;
+
 }

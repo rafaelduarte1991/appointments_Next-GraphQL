@@ -4,6 +4,7 @@
 # -----------------------------------------------
 
 type Appointment {
+  customer: Customer!
   endsAt: DateTime!
   startsAt: DateTime!
 }
@@ -14,15 +15,33 @@ input CreateAppointmentInput {
   startsAt: DateTime!
 }
 
+input CreateCustomerInput {
+  address: String!
+  customerId: String!
+  identificationNumber: String!
+  name: String!
+  phone: String!
+}
+
+type Customer {
+  address: String!
+  id: String!
+  identificationNumber: String!
+  name: String!
+  phone: String!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
 scalar DateTime
 
 type Mutation {
-  createAppointment(data: CreateAppointmentInput!): Appointment!
+  createAppointment(customerId: String!, data: CreateAppointmentInput!): Appointment!
+  createCustomer(data: CreateCustomerInput!): Customer!
 }
 
 type Query {
   appointments: [Appointment!]!
+  customers: [Customer!]!
 }

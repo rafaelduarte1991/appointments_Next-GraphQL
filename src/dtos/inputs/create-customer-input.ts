@@ -2,17 +2,24 @@ import { IsDate, IsString, isString } from "class-validator";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
-export class CreateAppointmentInput {
+export class CreateCustomerInput {
   @Field()
   @IsString()
   customerId: String;
 
   @Field()
-  @IsDate()
-  startsAt: Date;
+  @IsString()
+  name: String;
 
   @Field()
-  @IsDate()
-  endsAt: Date;
+  @IsString()
+  phone: String;
 
+  @Field()
+  @IsString()
+  address: String;
+
+  @Field()
+  @IsString()
+  identificationNumber: String;
 }

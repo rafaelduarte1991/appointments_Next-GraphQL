@@ -3,10 +3,11 @@ import { buildSchema } from "type-graphql";
 import "reflect-metadata"
 import { appointmentsResolver } from "./resolver/appointments-resolver";
 import path from 'node:path';
+import { customerResolver } from "./resolver/customers-resolver";
 
 async function bootstrap() {
   const schema = await buildSchema({
-    resolvers: [appointmentsResolver],
+    resolvers: [appointmentsResolver, customerResolver],
     emitSchemaFile: path.resolve(__dirname, 'schema.gql')
   });
 
