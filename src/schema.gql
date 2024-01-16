@@ -18,15 +18,14 @@ input CreateAppointmentInput {
 
 input CreateCustomerInput {
   address: String!
-  customerId: String!
   identificationNumber: String!
   name: String!
   phone: String!
 }
 
 type Customer {
+  _id: String!
   address: String!
-  id: String!
   identificationNumber: String!
   name: String!
   phone: String!
@@ -40,12 +39,15 @@ scalar DateTime
 type Mutation {
   createAppointment(data: CreateAppointmentInput!): Appointment!
   createCustomer(data: CreateCustomerInput!): Customer!
-  deleteAppointment(id: String!): Appointment!
-  editAppointment(data: CreateAppointmentInput!, id: String!): Appointment!
+  deleteAppointment(id: String!): Float!
+  deleteCustomer(id: String!): Float!
+  editAppointment(data: CreateAppointmentInput!, id: String!): Float!
+  editCustomer(data: CreateCustomerInput!, id: String!): Float!
 }
 
 type Query {
-  customers: [Customer!]!
   getAppointments: [Appointment!]!
   getAppointmentsById(id: String!): Appointment!
+  getCustomers: [Customer!]!
+  getCustomersById(id: String!): Customer!
 }

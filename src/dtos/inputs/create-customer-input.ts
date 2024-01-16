@@ -5,10 +5,6 @@ import { Field, InputType } from "type-graphql";
 export class CreateCustomerInput {
   @Field()
   @IsString()
-  customerId: String;
-
-  @Field()
-  @IsString()
   name: String;
 
   @Field()

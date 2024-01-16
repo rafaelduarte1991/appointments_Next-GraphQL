@@ -4,7 +4,7 @@ import { Field, ObjectType } from "type-graphql";
 @ObjectType()
 export class Customer {
   @Field()
-  id: String
+  _id: String
 
   @Field()
   name: String
