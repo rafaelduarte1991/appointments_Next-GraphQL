@@ -1,6 +1,6 @@
 import mongoose, {Schema} from "mongoose"
 
-const appointmentSchema = new Schema(
+const AppointmentSchema = new Schema(
   {
     startsAt: Date,
     endsAt: Date,
@@ -8,6 +8,6 @@ const appointmentSchema = new Schema(
   }
 )
 
-const Appointment = mongoose.models.Coins || mongoose.model("Appointment",appointmentSchema);
+const Appointment = mongoose.models.Coins || mongoose.model("Appointments",AppointmentSchema);
 
 export default Appointment;
