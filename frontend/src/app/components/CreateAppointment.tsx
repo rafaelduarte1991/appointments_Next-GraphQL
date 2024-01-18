@@ -1,9 +1,18 @@
 'use client'
 import Link from 'next/link';
+import useCustomers from '../hooks/useCustomers';
+import { useState } from 'react';
 
 export default function CreateAppointment() {
+  const [customerID, setCustomerID] = useState('');
+  const [customer, setCustomer] = useState('');
+  const customers = useCustomers();
 
-  const customer = null;
+  function checkCustomers() {
+    const customerFound = customers?.find(customer => customer.identificationNumber === customerID)
+    console.log(customerFound)
+    if(customerFound) setCustomer(customerFound.name.toString())
+  }
 
   return (
     <div className="mb-4">
@@ -19,18 +28,18 @@ export default function CreateAppointment() {
         </div>
         <div className="space-x-1">
           <label htmlFor="Name">CustomerID:</label>
-          <input type="text" placeholder="ID"/>
-          <button className="bg-slate-500 hover:bg-slate-700 btn">Search</button>
+          <input type="text" placeholder="ID" onChange={(e) => setCustomerID(e.target.value)}/>
+          <button onClick={checkCustomers} className="bg-slate-500 hover:bg-slate-700 btn">Search</button>
         </div>
       </div>
       <div className="flex flex-row w-2/3 my-5">
         <div className="space-x-1">
-          {customer !== null ?
+          {customer !== '' ?
           (
             <div className="flex flex-row">
               <div className="mr-4">Customer: {customer}</div>
-              <button className="bg-red-400 hover:bg-red-700 btn">
-                Clean
+              <button onClick={() => setCustomer('')} className="bg-red-400 hover:bg-red-700 btn">
+                Clear
               </button>
             </div>
           )
