@@ -26,12 +26,12 @@ const fetcher = ():AxiosPromise<ProductsFetchResponse> => {
   `
   })
 }
-export default function useAppointment() {
+export default function useAppointments() {
   const data = useQuery({
     queryFn: fetcher,
     queryKey: ['Appointments']
   })
-  console.log("dados", data.data?.data)
+
   if(data) {
     return data.data?.data?.data?.getAppointments || []
   } else {

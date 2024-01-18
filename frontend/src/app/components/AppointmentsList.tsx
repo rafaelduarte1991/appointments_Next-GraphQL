@@ -1,8 +1,10 @@
 'use client'
-import useAppointments from "../hooks/useAppointments"
+import useAppointments from "../hooks/useAppointments";
+import useCustomers from "../hooks/useCustomers";
 
 export default function AppointmentsList() {
   const data = useAppointments();
+  const customers = useCustomers();
 
   return (
     <div className="h-screen flex flex-col">
@@ -26,8 +28,8 @@ export default function AppointmentsList() {
               <tr key={index}>
                 <td>{new Date(item.startsAt).toLocaleDateString('en-US') + ' - ' +  new Date(item.startsAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'})}</td>
                 <td>{new Date(item.endsAt).toLocaleDateString('en-US') + ' - ' +  new Date(item.endsAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'})}</td>
-                <td>{'item.customer.name'}</td>
-                <td>{'item.customer.phone'}</td>
+                <td>{customers?.find(customer => customer._id === item.customerId)?.name}</td>
+                <td>{customers?.find(customer => customer._id === item.customerId)?.phone}</td>
                 <td>{'actions'}</td>
               </tr>
             ))}
