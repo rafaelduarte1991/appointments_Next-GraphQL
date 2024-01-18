@@ -2,10 +2,14 @@
 import Link from 'next/link';
 import useCustomers from '../hooks/useCustomers';
 import { useState } from 'react';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function CreateAppointment() {
   const [customerID, setCustomerID] = useState('');
   const [customer, setCustomer] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const customers = useCustomers();
 
   function checkCustomers() {
@@ -20,11 +24,19 @@ export default function CreateAppointment() {
       <div className="flex flex-row flex-wrap	w-10/12 justify-between">
         <div className="space-x-1">
           <label htmlFor="StartDate">Start Date:</label>
-          <input type="text" placeholder="Start Date"/>
+          <DatePicker
+            value={startDate.toLocaleDateString('en-US') + ' - ' +  startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'})}
+            showTimeSelect
+            onChange={(date:Date) => setStartDate(date)}
+          />
         </div>
         <div className="space-x-1">
           <label htmlFor="EndDate">End Date:</label>
-          <input type="text" placeholder="End Date"/>
+          <DatePicker
+            value={endDate > startDate ? endDate.toLocaleDateString('en-US') + ' - ' +  endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'}) : ('End date < Start date')}
+            showTimeSelect
+            onChange={(date:Date) => setEndDate(date)}
+            />
         </div>
         <div className="space-x-1">
           <label htmlFor="Name">CustomerID:</label>
