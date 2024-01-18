@@ -16,12 +16,11 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+input {
+  padding-left: 5px;
 }
+
+.btn {
+  @apply text-white text-sm font-bold py-1 px-3 rounded !important;
+}
+
