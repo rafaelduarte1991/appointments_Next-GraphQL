@@ -1,11 +1,13 @@
-'use-client'
+'use client'
 import { useState } from "react";
-import useAppointments from "../hooks/useAppointments";
-import useCustomers from "../hooks/useCustomers";
+import QueryGetAppointments from "../graphql/appointments/Query";
+import useCustomers from "../graphql/customers/Query";
 import DatePicker from "react-datepicker";
+import { AppointmentActions } from "./AppointmentActions";
 import "react-datepicker/dist/react-datepicker.css";
 
 interface Appointment {
+  _id: String,
   startsAt: Date;
   endsAt: Date;
   customerId: String;
@@ -14,7 +16,7 @@ interface Appointment {
 export default function AppointmentsList() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [filteredData, setFilteredData] = useState<Appointment[]>([]);
-  const data: Appointment[] | null = useAppointments();
+  const data: Appointment[] | null = QueryGetAppointments();
   const customers = useCustomers();
 
   const handleSelect = () => {
@@ -76,7 +78,9 @@ export default function AppointmentsList() {
                         (customer) => customer._id === item.customerId
                       )?.phone}
                     </td>
-                    <td>{"actions"}</td>
+                    <td>
+                      <AppointmentActions appointmentId={item._id}/>
+                    </td>
                   </tr>
                 ))
               : null}
