@@ -22,7 +22,7 @@ export default function CreateAppointment() {
     <div className="mb-4">
       <div className="mb-5 text-2xl">New Appointment</div>
       <div className="flex flex-row flex-wrap	w-10/12 justify-between">
-        <div className="space-x-1">
+        <div className="space-x-2 mr-6 mb-2">
           <label htmlFor="StartDate">Start Date:</label>
           <DatePicker
             value={startDate.toLocaleDateString('en-US') + ' - ' +  startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'})}
@@ -30,7 +30,7 @@ export default function CreateAppointment() {
             onChange={(date:Date) => setStartDate(date)}
           />
         </div>
-        <div className="space-x-1">
+        <div className="space-x-2 mr-6 mb-2">
           <label htmlFor="EndDate">End Date:</label>
           <DatePicker
             value={endDate > startDate ? endDate.toLocaleDateString('en-US') + ' - ' +  endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'}) : ('End date < Start date')}
@@ -38,9 +38,9 @@ export default function CreateAppointment() {
             onChange={(date:Date) => setEndDate(date)}
             />
         </div>
-        <div className="space-x-1">
+        <div className="space-x-2">
           <label htmlFor="Name">CustomerID:</label>
-          <input type="text" placeholder="ID" onChange={(e) => setCustomerID(e.target.value)}/>
+          <input className='mb-2' type="text" placeholder="ID" onChange={(e) => setCustomerID(e.target.value)}/>
           <button onClick={checkCustomers} className="bg-slate-500 hover:bg-slate-700 btn">Search</button>
         </div>
       </div>
