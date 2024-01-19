@@ -4,7 +4,6 @@ import gql from 'graphql-tag';
 interface Customers {
   name: String;
   phone: String;
-  _id: String;
   identificationNumber: string;
 }
 
@@ -17,13 +16,12 @@ const GET_CUSTOMERS = gql`
     getCustomers {
       name
       phone
-      _id
       identificationNumber
     }
   }
 `;
 
-export default function useCustomers() {
+export default function QueryGetCustomers() {
   const { data, loading, error } = useQuery<ProductsFetchResponse>(GET_CUSTOMERS);
 
   if (loading) {
