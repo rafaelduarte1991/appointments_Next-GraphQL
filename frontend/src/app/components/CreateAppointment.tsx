@@ -1,21 +1,54 @@
 'use client'
 import Link from 'next/link';
-import useCustomers from '../hooks/useCustomers';
+import QueryGetCustomers from '../graphql/customers/Query';
 import { useState } from 'react';
 import DatePicker from "react-datepicker";
+import { CREATE_APPOINTMENT } from '../graphql/appointments/Mutations';
+import { useMutation } from '@apollo/client';
 import "react-datepicker/dist/react-datepicker.css";
+
+interface Customers {
+  name: String;
+  phone: String;
+  identificationNumber: string;
+}
 
 export default function CreateAppointment() {
   const [customerID, setCustomerID] = useState('');
-  const [customer, setCustomer] = useState('');
+  const [customer, setCustomer] = useState<Customers | null>(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const customers = useCustomers();
+  const customers = QueryGetCustomers();
+
+  const [createAppointment] = useMutation(CREATE_APPOINTMENT);
+
+  const handleCreateAppointment = async () => {
+    try {
+      const response = await createAppointment({
+        variables: {
+          data: {
+            startsAt: new Date(startDate),
+            endsAt: new Date(endDate),
+            customerId: customer?.identificationNumber,
+          },
+        },
+      });
+
+      if (response?.data) {
+        console.log('Appointment created successfully:', response.data);
+      } else {
+        console.error('Error creating appointment:', response.errors);
+      }
+    } catch (error: any) {
+      console.error('Error creating appointment:', error.message);
+    }
+  };
+
 
   function checkCustomers() {
     const customerFound = customers?.find(customer => customer.identificationNumber === customerID)
     console.log(customerFound)
-    if(customerFound) setCustomer(customerFound.name.toString())
+    if(customerFound) setCustomer(customerFound)
   }
 
   return (
@@ -46,11 +79,11 @@ export default function CreateAppointment() {
       </div>
       <div className="flex flex-row w-2/3 my-5">
         <div className="space-x-1">
-          {customer !== '' ?
+          {customer !== null ?
           (
             <div className="flex flex-row">
-              <div className="mr-4">Customer: {customer}</div>
-              <button onClick={() => setCustomer('')} className="bg-red-400 hover:bg-red-700 btn">
+              <div className="mr-4">Customer: {customer?.name.toString()}</div>
+              <button onClick={() => setCustomer(null)} className="bg-red-400 hover:bg-red-700 btn">
                 Clear
               </button>
             </div>
@@ -68,7 +101,7 @@ export default function CreateAppointment() {
         </div>
       </div>
       <div>
-          <button className="bg-blue-500 hover:bg-blue-700 btn">
+          <button onClick={handleCreateAppointment} className="bg-blue-500 hover:bg-blue-700 btn">
             Add Appoinment
           </button>
         </div>
