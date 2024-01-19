@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import QueryGetAppointments from "../graphql/appointments/Query";
-import useCustomers from "../graphql/customers/Query";
+import QueryGetCustomers from "../graphql/customers/Query";
 import DatePicker from "react-datepicker";
 import { AppointmentActions } from "./AppointmentActions";
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,13 +17,20 @@ export default function AppointmentsList() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [filteredData, setFilteredData] = useState<Appointment[]>([]);
   const data: Appointment[] | null = QueryGetAppointments();
-  const customers = useCustomers();
+  const customers = QueryGetCustomers();
 
   const handleSelect = () => {
-    const filteredAppointments = data?.filter(
-      (item) => new Date(item.startsAt).getDate() === selectedDate.getDate()
-    );
-    if(filteredAppointments) setFilteredData(filteredAppointments);
+    const filteredAppointments = data?.filter((item) => {
+      const startDate = new Date(item.startsAt);
+
+      return (
+        startDate.getDate() === selectedDate.getDate() &&
+        startDate.getMonth() === selectedDate.getMonth() &&
+        startDate.getFullYear() === selectedDate.getFullYear()
+      );
+    });
+
+    if (filteredAppointments) setFilteredData(filteredAppointments);
   };
 
   return (
@@ -70,12 +77,12 @@ export default function AppointmentsList() {
                     </td>
                     <td>
                       {customers?.find(
-                        (customer) => customer._id === item.customerId
+                        (customer) => customer.identificationNumber === item.customerId
                       )?.name}
                     </td>
                     <td>
                       {customers?.find(
-                        (customer) => customer._id === item.customerId
+                        (customer) => customer.identificationNumber === item.customerId
                       )?.phone}
                     </td>
                     <td>
