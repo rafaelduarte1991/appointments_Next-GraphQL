@@ -10,15 +10,15 @@ export default function CreateCustomer() {
         <input type="text" placeholder="Name"/>
       </div>
       <div>
-        <label htmlFor="Name">Identification Number:</label>
+        <label htmlFor="ID">Identification Number:</label>
         <input type="text" placeholder="ID"/>
       </div>
       <div>
-        <label htmlFor="Name">Address</label>
+        <label htmlFor="Address">Address</label>
         <input type="text" placeholder="Address"/>
       </div>
       <div>
-        <label htmlFor="Name">Phone Number:</label>
+        <label htmlFor="Phone">Phone Number:</label>
         <input type="text" placeholder="Phone"/>
       </div>
       <div>

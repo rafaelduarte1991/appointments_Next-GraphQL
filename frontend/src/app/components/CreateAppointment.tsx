@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import QueryGetCustomers from '../graphql/customers/Query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import DatePicker from "react-datepicker";
 import { CREATE_APPOINTMENT } from '../graphql/appointments/Mutations';
 import { useMutation } from '@apollo/client';
@@ -15,96 +15,168 @@ interface Customers {
 
 export default function CreateAppointment() {
   const [customerID, setCustomerID] = useState('');
+  const [createNewAppointment, setCreateNewAppointment] = useState(false);
   const [customer, setCustomer] = useState<Customers | null>(null);
+  const [searched, setSearched] = useState(false);
+  const [isDateAfter, setIsDateAfter] = useState(true);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const customers = QueryGetCustomers();
-
   const [createAppointment] = useMutation(CREATE_APPOINTMENT);
 
-  const handleCreateAppointment = async () => {
-    try {
-      const response = await createAppointment({
-        variables: {
-          data: {
-            startsAt: new Date(startDate),
-            endsAt: new Date(endDate),
-            customerId: customer?.identificationNumber,
-          },
-        },
-      });
+  const startDateRef = useRef(new Date());
+  const endDateRef = useRef(new Date());
 
-      if (response?.data) {
-        console.log('Appointment created successfully:', response.data);
-      } else {
-        console.error('Error creating appointment:', response.errors);
+  function customerSubmitCheck() {
+    setSearched(true)
+    return customer !== null
+  }
+
+  function dateSubmitCheck() {
+    const isDateAfter = endDate > startDate;
+    setIsDateAfter(isDateAfter)
+    return isDateAfter
+  }
+
+  const handleAddAppointment = async () => {
+    const isCustomerValid = customerSubmitCheck()
+    const isDateValid = dateSubmitCheck()
+
+    if (isCustomerValid && isDateValid) {
+      try {
+        // const response = await createAppointment({
+        //   variables: {
+        //     data: {
+        //       startsAt: new Date(startDate),
+        //       endsAt: new Date(endDate),
+        //       customerId: customer?.identificationNumber,
+        //     },
+        //   },
+        // });
+
+        // if (response?.data) {
+        //   console.log('Appointment created successfully:', response.data);
+            setCreateNewAppointment(false)
+            alert("appointment created")
+            cleanData()
+        // } else {
+        //   console.error('Error creating appointment:', response.errors);
+        // }
+      } catch (error: any) {
+        console.error('Error creating appointment:', error.message);
       }
-    } catch (error: any) {
-      console.error('Error creating appointment:', error.message);
     }
   };
 
-
   function checkCustomers() {
     const customerFound = customers?.find(customer => customer.identificationNumber === customerID)
-    console.log(customerFound)
-    if(customerFound) setCustomer(customerFound)
+    if(customerFound) {
+      setCustomer(customerFound);
+    } else {
+      setCustomer(null);
+    }
+    setSearched(true);
   }
 
+  function handleCancelAppointment() {
+    setCreateNewAppointment(!createNewAppointment)
+    cleanData()
+  }
+
+  function cleanData() {
+    setCustomer(null)
+    setSearched(false)
+    setStartDate(new Date())
+    setEndDate(new Date())
+  }
+
+
   return (
-    <div className="mb-4">
-      <div className="mb-5 text-2xl">New Appointment</div>
-      <div className="flex flex-row flex-wrap	w-10/12 justify-between">
-        <div className="space-x-2 mr-6 mb-2">
-          <label htmlFor="StartDate">Start Date:</label>
-          <DatePicker
-            value={startDate.toLocaleDateString('en-US') + ' - ' +  startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'})}
-            showTimeSelect
-            onChange={(date:Date) => setStartDate(date)}
-          />
-        </div>
-        <div className="space-x-2 mr-6 mb-2">
-          <label htmlFor="EndDate">End Date:</label>
-          <DatePicker
-            value={endDate > startDate ? endDate.toLocaleDateString('en-US') + ' - ' +  endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'}) : ('End date < Start date')}
-            showTimeSelect
-            onChange={(date:Date) => setEndDate(date)}
-            />
-        </div>
-        <div className="space-x-2">
-          <label htmlFor="Name">CustomerID:</label>
-          <input className='mb-2' type="text" placeholder="ID" onChange={(e) => setCustomerID(e.target.value)}/>
-          <button onClick={checkCustomers} className="bg-slate-500 hover:bg-slate-700 btn">Search</button>
-        </div>
-      </div>
-      <div className="flex flex-row w-2/3 my-5">
-        <div className="space-x-1">
-          {customer !== null ?
-          (
-            <div className="flex flex-row">
-              <div className="mr-4">Customer: {customer?.name.toString()}</div>
-              <button onClick={() => setCustomer(null)} className="bg-red-400 hover:bg-red-700 btn">
-                Clear
-              </button>
-            </div>
-          )
-          :
-          (
-          <div>
-            <Link href="/customers">
-              <button onClick={() => '/customers'} className="bg-blue-500 hover:bg-blue-700 btn">
-                New Customer
-              </button>
-            </Link>
-          </div>
-          )}
-        </div>
-      </div>
-      <div>
-          <button onClick={handleCreateAppointment} className="bg-blue-500 hover:bg-blue-700 btn">
-            Add Appoinment
+    <div className="flex flex-col items-center self-center min-w-64 w-full lg:max-w-[700px] mb-4">
+      <div className="text-2xl">
+      {!createNewAppointment &&
+          <button
+            onClick={() => setCreateNewAppointment(!createNewAppointment)}
+            className={`bg-blue-500 hover:bg-blue-700 btn max-w-64 w-full self-center transition-colors duration-300`}
+          >
+            Create New Appointment
           </button>
-        </div>
+        }
+      </div>
+      {createNewAppointment &&
+        <>
+          <div className="flex flex-col sm:flex-row flex-wrap	w-full sm:max-w-[550px] self-center justify-between ">
+            <div className="inputDiv">
+              <label htmlFor="Name" className='my-auto'>CustomerID:</label>
+              <input className='input self-center' type="text" placeholder="ID" onChange={(e) => setCustomerID(e.target.value)}/>
+              <div className='flex flex-row justify-between w-60 self-center mt-1'>
+                <button
+                  onClick={checkCustomers}
+                  className="bg-slate-500 hover:bg-slate-700 btn w-28 self-center"
+                  >
+                  Search
+                </button>
+                <button onClick={() => '/customers'} className="bg-blue-500 hover:bg-blue-700 btn w-28 self-center ml-2">
+                  New
+                </button>
+              </div>
+            </div>
+            {searched && customer === null &&
+                <div className="custSearchResponse text-red-600">
+                  Customer: Not found
+                </div>
+              }
+              {customer !== null && searched &&
+                <div className="custSearchResponse">
+                  Customer: {customer?.name.toString()}
+                </div>
+              }
+            <div className='max-w-[350px] self-center sm:max-w-[600px] sm:flex sm:flex-row sm:w-full'>
+              <div className="inputDiv sm:flex-wrap sm:justify-between">
+                <label htmlFor="StartDate">Start Date:</label>
+                <DatePicker
+                  value={startDate.toLocaleDateString('en-US') + ' - ' +  startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'})}
+                  showTimeSelect
+                  className='input'
+                  selected={startDateRef.current}
+                  onChange={(date:Date) => {
+                    setStartDate(date);
+                    startDateRef.current = date;
+                  }}
+                />
+              </div>
+              <div className="inputDiv sm:flex-wrap sm:justify-between">
+                <label htmlFor="EndDate">End Date:</label>
+                <DatePicker
+                  value={endDate.toLocaleDateString('en-US') + ' - ' +  endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric'})}
+                  showTimeSelect
+                  className='input'
+                  placeholderText='Select a date after the start date.'
+                  selected={endDateRef.current}
+                  onChange={(date:Date) => {
+                    setEndDate(date);
+                    endDateRef.current = date;
+                  }}
+                  />
+                  <div className='sm:w-full sm:text-right'>
+                    {isDateAfter === false && (
+                      <span className='text-red-600'>Select a date after the start date.</span>
+                    )}
+                  </div>
+
+              </div>
+            </div>
+          </div>
+          <div className='w-full text-center mt-3'>
+            <button onClick={handleAddAppointment} className="bg-blue-500 hover:bg-blue-700 btn max-w-64 w-full self-center">
+              Create Appoinment
+            </button>
+          </div>
+          <button onClick={handleCancelAppointment} className="bg-red-500 hover:bg-red-700 btn max-w-64 w-full self-center mt-3">
+            Cancel
+          </button>
+        </>
+        }
     </div>
   );
 };

@@ -14,9 +14,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <html lang="en">
-      <body style={{ fontFamily: 'Inter, sans-serif' }} className="bg-zinc-50 text-zinc-800">{children}</body>
+      <body style={{ fontFamily: 'Inter, sans-serif' }} className="bg-zinc-100 text-zinc-800 my-5">{children}</body>
     </html>
   )
 }

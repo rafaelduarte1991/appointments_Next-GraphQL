@@ -34,7 +34,7 @@ export function AppointmentActions({ appointmentId }: AppointmentActionsProps) {
   };
 
   return (
-    <div className="flex space-x-4 justify-center">
+    <div className="flex space-x-2 sm:space-x-4 justify-center">
       <div>
         <button>
           <FaPencilAlt size={17} />

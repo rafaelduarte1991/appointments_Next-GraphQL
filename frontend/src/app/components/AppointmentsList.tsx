@@ -34,25 +34,24 @@ export default function AppointmentsList() {
   };
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="mt-5 mb-4 flex justify-center flex-wrap w-full">
-        <label className="mr-1 mb-2">Select Date</label>
+    <div className="flex flex-col">
+      <div className="mt-5 mb-4 flex justify-center items-center flex-wrap w-full">
+        <label>Select Date</label>
         <DatePicker
-          className="mx-3 mb-2"
+          className="w-24 rounded-sm mx-2"
           selected={selectedDate}
           onChange={(date: Date) => setSelectedDate(date)}
         />
         <button className="bg-slate-500 hover:bg-slate-700 btn" onClick={handleSelect}>Select</button>
       </div>
-      <div className="overflow-x-auto w-90">
-        <table className="w-full min-w-[800px] text-center rounded overflow-hidden border border-solid divide-gray-900">
+      <div className="w-full text-sm sm:text-base">
+        <table className="w-full min-w-[280px] text-center rounded border border-solid divide-gray-900">
           <thead className="bg-zinc-300">
             <tr>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Name</th>
-              <th>Phone Number</th>
-              <th>Actions</th>
+              <th className="w-1/5 sm:w-auto">Time</th>
+              <th className="w-1/5 sm:w-auto">Name</th>
+              <th className="w-1/5 sm:w-auto">Phone Number</th>
+              <th className="w-1/6 sm:w-auto">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -60,15 +59,10 @@ export default function AppointmentsList() {
               ? filteredData.map((item, index) => (
                   <tr key={index}>
                     <td>
-                      {new Date(item.startsAt).toLocaleDateString("en-US") +
-                        " - " +
-                        new Date(item.startsAt).toLocaleTimeString("en-US", {
+                      {new Date(item.startsAt).toLocaleTimeString("en-US", {
                           hour: "numeric",
                           minute: "numeric",
-                        })}
-                    </td>
-                    <td>
-                      {new Date(item.endsAt).toLocaleDateString("en-US") +
+                        }) +
                         " - " +
                         new Date(item.endsAt).toLocaleTimeString("en-US", {
                           hour: "numeric",
@@ -85,7 +79,7 @@ export default function AppointmentsList() {
                         (customer) => customer.identificationNumber === item.customerId
                       )?.phone}
                     </td>
-                    <td>
+                    <td className="w-10 sm:w-auto">
                       <AppointmentActions appointmentId={item._id}/>
                     </td>
                   </tr>
